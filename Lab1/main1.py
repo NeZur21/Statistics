@@ -2,10 +2,10 @@ from collections import defaultdict, Counter
 import math
 import matplotlib.pyplot as plt
 
-file = open('../Москва_2021.txt')
+file = open('Москва_2021.txt')
 lines1 = sorted(map(lambda x: x.strip(), file.readlines()))
 lines3 = lines1[:]
-file = open('../Москва_2021.txt')
+file = open('Москва_2021.txt')
 lines2 = map(lambda x: x.strip(), file.readlines())
 
 def diskr(lines):
