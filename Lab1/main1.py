@@ -2,10 +2,10 @@ from collections import defaultdict, Counter
 import math
 import matplotlib.pyplot as plt
 
-file = open('Москва_2021.txt')
+file = open('../Москва_2021.txt')
 lines1 = sorted(map(lambda x: x.strip(), file.readlines()))
 lines3 = lines1[:]
-file = open('Москва_2021.txt')
+file = open('../Москва_2021.txt')
 lines2 = map(lambda x: x.strip(), file.readlines())
 
 def diskr(lines):
@@ -24,7 +24,6 @@ def interval(chast):
         if i not in digits:
             chast.append((i, 0))
     chast = sorted(chast)
-    print(chast)
     #while len(chast) % 7 != 0:
         #chast.append((chast[-1][0] + 1, 0))
     i = 0
@@ -122,14 +121,14 @@ def assimetr(d1):
     return n / ((n - 1) * (n - 2)) * (M / s ** 3)
 #    return (1 / n) * sum((((x - mid_d(d1)) / (sigma1) ** 3)  for x, f in d1)
 
-def excess(d):
+def excess(d, sigma):
     n = sum(i for a, i in d)
     M = sum(f * (x - mid_d(d)) ** 4 for x, f in d) / n
-    return M / (sigma1 ** 4) - 3
+    return M / (sigma ** 4) - 3
 
-def sigma_3(d, lines):
-    a = mid_d(d) - 3 * sigma1
-    b = mid_d(d) + 3 * sigma1
+def sigma_3(d, lines, sigma):
+    a = mid_d(d) - 3 * sigma
+    b = mid_d(d) + 3 * sigma
 
     check = []
 
@@ -167,46 +166,44 @@ def func(d):
 
 diskr_ser = sorted(diskr(lines1).items())
 interval_ser = sorted(interval(diskr_ser).items())
-
-print('ДИСКРЕТНОЕ')
-
-print(*diskr_ser, sep='\n', end=' значения\n')
-
-print(mid_d(diskr_ser), end=' средняя\n')
-
 d1 = disp_d(diskr_ser)
 d2 = disp_i(interval_ser)
-print(d1, end=' дисперсия\n')
 sigma1 = math.sqrt(d1)
 sigma2 = math.sqrt(d2)
-print(sigma1, end=' средне квадратичное\n')
-print(variation_d(diskr_ser, sigma1) * 100, end=' коэф вариации\n')
-print(moda_d(diskr_ser), end=' мода и частота\n')
-print(midian(sorted(lines2)), end=' медиана\n')
-ma = max(diskr_ser, key=lambda x: x[0])[0]
-mi = min(diskr_ser, key=lambda x: x[0])[0]
-print(ma - mi, end=' размах\n')
+mid = mid_d(diskr_ser)
 
-print('\nИНРЕВАЛЬНОЕ')
-print(*interval_ser, sep='\n', end=' значения\n')
-print(mid_i(interval_ser), end=' средняя\n')
-print(d2, end=' дисперсия\n')
-print(sigma2, end=' средне квадратичное\n')
-print(variation_i(interval_ser, sigma2) * 100, end=' коэф вариации\n')
-print(moda_i(interval_ser), end=' мода\n')
-print(interval_ser[-1][0][1] - interval_ser[0][0][0], end=' размах\n')
+if __name__ == "__main__":
+    print('ДИСКРЕТНОЕ')
+    print(sum(f for v, f in diskr_ser))
+    print(*diskr_ser, sep='\n', end=' значения\n')
+    print(mid_d(diskr_ser), end=' средняя\n')
+    print(d1, end=' дисперсия\n')
+    print(sigma1, end=' средне квадратичное\n')
+    print(variation_d(diskr_ser, sigma1) * 100, end=' коэф вариации\n')
+    print(moda_d(diskr_ser), end=' мода и частота\n')
+    print(midian(sorted(lines2)), end=' медиана\n')
+    ma = max(diskr_ser, key=lambda x: x[0])[0]
+    mi = min(diskr_ser, key=lambda x: x[0])[0]
+    print(ma - mi, end=' размах\n')
 
-print()
+    print('\nИНРЕВАЛЬНОЕ')
+    print(*interval_ser, sep='\n', end=' значения\n')
+    print(mid_i(interval_ser), end=' средняя\n')
+    print(d2, end=' дисперсия\n')
+    print(sigma2, end=' средне квадратичное\n')
+    print(variation_i(interval_ser, sigma2) * 100, end=' коэф вариации\n')
+    print(moda_i(interval_ser), end=' мода\n')
+    print(interval_ser[-1][0][1] - interval_ser[0][0][0], end=' размах\n')
+    print()
+    print(assimetr(diskr_ser), end=' ассиметрия\n')
+    print(excess(diskr_ser, sigma1), end=' эксцесс\n')
 
-print(assimetr(diskr_ser), end=' ассиметрия\n')
-print(excess(diskr_ser), end=' эксцесс\n')
+    print(sigma_3(diskr_ser, lines3, sigma1), end=' правило трех сигм соблюдено \n')
 
-print(sigma_3(diskr_ser, lines3), end=' правило трех сигм соблюдено \n')
+    print(comm(diskr_ser))
 
-print(comm(diskr_ser))
-
-diagram(interval_ser)
-polygon(diskr_ser)
-func(comm(diskr_ser))
+    diagram(interval_ser)
+    polygon(diskr_ser)
+    func(comm(diskr_ser))
 
 
