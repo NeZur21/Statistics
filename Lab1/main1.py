@@ -15,12 +15,12 @@ def diskr(lines):
             d[int(i)] += 1
     return d
 
-def interval(chast):
+def interval(chast, n):
     chast = chast[:]
     ryad = defaultdict(int)
     digits = [d for d, f in chast]
-    x = len(chast) // 7 + 1
-    for i in range(14, 7 * x + 14 + 1):
+    x = math.ceil(len(chast) / n)
+    for i in range(chast[0][0], n * x + chast[0][0] + 1):
         if i not in digits:
             chast.append((i, 0))
     chast = sorted(chast)
@@ -126,7 +126,7 @@ def excess(d, sigma):
     M = sum(f * (x - mid_d(d)) ** 4 for x, f in d) / n
     return M / (sigma ** 4) - 3
 
-def sigma_3(d, lines, sigma):
+def sigma_3(d, lines, sigma, p):
     a = mid_d(d) - 3 * sigma
     b = mid_d(d) + 3 * sigma
 
@@ -136,7 +136,38 @@ def sigma_3(d, lines, sigma):
         if a <= int(i) <= b:
             check.append(i)
 
-    return len(check) / len(lines) * 100
+    x1 = len(check) / len(lines) * 100
+
+    t1 = True if abs(x1 - 99.7) <= p else False
+
+
+    a = mid_d(d) - 2 * sigma
+    b = mid_d(d) + 2 * sigma
+
+    check = []
+
+    for i in lines:
+        if a <= int(i) <= b:
+            check.append(i)
+
+    x2 = len(check) / len(lines) * 100
+
+    t2 = True if abs(x2 - 99.7) <= p else False
+
+    a = mid_d(d) - sigma
+    b = mid_d(d) + sigma
+
+    check = []
+
+    for i in lines:
+        if a <= int(i) <= b:
+            check.append(i)
+
+    x3 = len(check) / len(lines) * 100
+
+    t3 = True if abs(x3 - 99.7) <= p else False
+
+    return [[x1, t1], [x2, t2], [x3, t3]]
 
 def comm(d):
     list1 = []
@@ -165,12 +196,13 @@ def func(d):
     plt.show()
 
 diskr_ser = sorted(diskr(lines1).items())
-interval_ser = sorted(interval(diskr_ser).items())
+interval_ser = sorted(interval(diskr_ser, 7).items())
 d1 = disp_d(diskr_ser)
 d2 = disp_i(interval_ser)
 sigma1 = math.sqrt(d1)
 sigma2 = math.sqrt(d2)
-mid = mid_d(diskr_ser)
+mid_diskr = mid_d(diskr_ser)
+mid_intr = mid_i(interval_ser)
 
 if __name__ == "__main__":
     print('ДИСКРЕТНОЕ')
@@ -198,9 +230,15 @@ if __name__ == "__main__":
     print(assimetr(diskr_ser), end=' ассиметрия\n')
     print(excess(diskr_ser, sigma1), end=' эксцесс\n')
 
-    print(sigma_3(diskr_ser, lines3, sigma1), end=' правило трех сигм соблюдено \n')
-
-    print(comm(diskr_ser))
+    print()
+    sigma3 = sigma_3(diskr_ser, lines3, sigma1, 0.5)
+    print('Правило трех сигм:')
+    print(f'{sigma3[0][0]} {'Близко к нормальному распределению' if sigma3[0][1] else 'Отклонение'}')
+    print(f'{sigma3[1][0]} {'Близко к нормальному распределению' if sigma3[1][1] else 'Отклонение'}')
+    print(f'{sigma3[2][0]} {'Близко к нормальному распределению' if sigma3[2][1] else 'Отклонение'}')
+    print(f'Данные {'не ' if all(i for x, i in sigma3) else ''}имеют значительные отклонения от нормального распределения')
+    print()
+    #print(comm(diskr_ser))
 
     diagram(interval_ser)
     polygon(diskr_ser)
