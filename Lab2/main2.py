@@ -11,6 +11,7 @@ acc = 3
 t = 1.96
 n = ceil(t ** 2 * sigma1 ** 2 / acc ** 2)
 
+
 def selection(n, digits, k):
     list1= [[] for i in range(k)]
     for i in range(k):
@@ -106,7 +107,13 @@ sigma = sigma_inter(frequencies, _x)
 norm = normal(frequencies, sigma, _x)
 
 conf = confidence(random.choice(selections))
+
+selection_1 = random.choice(selections)
+selection_2 = [random.choice(selections), random.choice(selections)]
+
 if __name__ == "__main__":
+    print('Длин выборки')
+    print(n)
     print(norm)
     #print('Значения выборок')
     #for i in selections:
