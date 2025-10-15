@@ -243,5 +243,4 @@ if __name__ == "__main__":
     diagram(interval_ser)
     polygon(diskr_ser)
     func(comm(diskr_ser))
-
-
+sko = 12.774983

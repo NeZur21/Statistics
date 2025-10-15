@@ -5,10 +5,12 @@ import random
 import scipy
 
 file = open('../Москва_2021.txt')
-lines1 = list(map(lambda x: x.strip(), file.readlines()))
+lines1 = list(map(lambda x: x.strip(), file.readlines())),3
 
 acc = 3
+alpha = 0.05
 t = 1.96
+print(sigma1)
 n = ceil(t ** 2 * sigma1 ** 2 / acc ** 2)
 
 
@@ -92,7 +94,7 @@ def confidence(digits):
     upper = mid + margin_error
     return (float(lower), float(upper)), mid, s, margin_error
 
-selections = selection(n, lines1.copy(), 36)
+selections = selection(n, lines1, 36)
 
 averages = average(selections)
 
@@ -131,6 +133,8 @@ if __name__ == "__main__":
     print('Значения для выборки')
     print('Математическое ожидание')
     print(conf[1])
+    print('Критерий Стьдента')
+    print(scipy.stats.t.ppf(1 - alpha / 2, len(random.choice(selections)) - 1))
     print('СКО')
     print(conf[2])
     print('Точность')
@@ -139,5 +143,4 @@ if __name__ == "__main__":
     print(f'{conf[0][0]} {(conf[0][0] + conf[0][1]) / 2} {conf[0][1]}')
 
     diagram(frequencies, norm)
-
 

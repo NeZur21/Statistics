@@ -1,5 +1,5 @@
 from Lab1.main1 import interval_ser as interval_row
-from Lab1.main1 import sigma2, mid_intr, d1, disp_d, diskr
+from Lab1.main1 import sigma2, mid_intr, d1, disp_d, diskr, sko
 from Lab2.main2 import frequencies as interval_mid
 from Lab2.main2 import sigma, _x, selection_1, selection_2
 from scipy.stats import chi2 as chi2_crit
@@ -25,7 +25,6 @@ def chi(interval, E):
 def crit(interval, alpha, chi2):
     m = 2
     df = len(interval) - 1 - 2
-    print(n)
     chi_crit = chi2_crit.ppf(1 - alpha, df)
     if chi2 <= chi_crit:
         print("H0 принимается: распределение нормальное")
@@ -33,13 +32,13 @@ def crit(interval, alpha, chi2):
         print("H0 отвергается: распределение не нормальное")
 
 def fisher(sigma1, sigma2):
-    return max(sigma1, sigma2) ** 2 / sigma2
+    return max(sigma1, sigma2) ** 2 / min(sigma1, sigma)
 
 print('ИНТЕГРАЛЬНЫЙ РЯД')
 
 n = freq(interval_row)
 
-E = [n * (norm.cdf(b, mid_intr, sigma2) - norm.cdf(a, mid_intr, sigma2)) for (a, b), f in interval_row]
+E = [n * (norm.cdf(b, mid_intr, sko) - norm.cdf(a, mid_intr, sko)) for (a, b), f in interval_row]
 
 print('Ожидаемые частоты')
 for i in E:
@@ -76,6 +75,8 @@ print(chi2_value )
 
 print('Критическое значение')
 print(chi2_crit.ppf(1 - 0.05, len(interval_mid) - 2 - 1))
+
+print()
 
 alpha = 0.05
 sel1 = selection_2[0]
