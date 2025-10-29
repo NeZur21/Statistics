@@ -5,7 +5,7 @@ import random
 import scipy
 
 file = open('../Москва_2021.txt')
-lines1 = list(map(lambda x: x.strip(), file.readlines())),3
+lines1 = list(map(lambda x: x.strip(), file.readlines()))
 
 acc = 3
 alpha = 0.05
@@ -78,9 +78,16 @@ def sigma_inter(digits, x):
     return sigma
 
 def normal(digits, sigma, _x):
-    list1 = [[a, 0] for [a, b], f in digits]
-    for x in range(len(list1)):
-        list1[x][1] = (1 / (sigma * sqrt(2 * pi))) * e ** (-(list1[x][0] - _x) ** 2 / (2 * sigma ** 2))
+    start = digits[0][0][0]
+    end = digits[-1][0][1]
+    step = 0.1  # шаг между точками (можно сделать меньше для большей плавности)
+
+    list1 = []
+    a = start
+    while a <= end:
+        y = (1 / (sigma * sqrt(2 * pi))) * e ** (-(a - _x) ** 2 / (2 * sigma ** 2))
+        list1.append([a, y])
+        a += step
 
     return list1
 
@@ -94,7 +101,7 @@ def confidence(digits):
     upper = mid + margin_error
     return (float(lower), float(upper)), mid, s, margin_error
 
-selections = selection(n, lines1, 36)
+selections = selection(n, lines1.copy(), 36)
 
 averages = average(selections)
 

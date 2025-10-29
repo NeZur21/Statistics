@@ -34,11 +34,21 @@ def crit(interval, alpha, chi2):
 def fisher(sigma1, sigma2):
     return max(sigma1, sigma2) ** 2 / min(sigma1, sigma)
 
+intervals = []
+
+for (a, b), freqs in interval_row:
+    intervals.append([[a, b], freqs])
+
+interval_row = intervals
+
+interval_row[0][0][0] = -float('inf')
+interval_row[-1][0][1] = float('inf')
+
 print('ИНТЕГРАЛЬНЫЙ РЯД')
 
 n = freq(interval_row)
 
-E = [n * (norm.cdf(b, mid_intr, sko) - norm.cdf(a, mid_intr, sko)) for (a, b), f in interval_row]
+E = [n * (norm.cdf((b-mid_intr) / sigma2) - norm.cdf((a-mid_intr) / sigma2)) for (a, b), f in interval_row]
 
 print('Ожидаемые частоты')
 for i in E:
