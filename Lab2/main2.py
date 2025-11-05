@@ -10,7 +10,6 @@ lines1 = list(map(lambda x: x.strip(), file.readlines()))
 acc = 3
 alpha = 0.05
 t = 1.96
-print(sigma1)
 n = ceil(t ** 2 * sigma1 ** 2 / acc ** 2)
 
 
@@ -77,10 +76,9 @@ def sigma_inter(digits, x):
     sigma = sqrt(sigma)
     return sigma
 
-def normal(digits, sigma, _x):
+def normal(digits, sigma, _x, step):
     start = digits[0][0][0]
     end = digits[-1][0][1]
-    step = 0.1  # шаг между точками (можно сделать меньше для большей плавности)
 
     list1 = []
     a = start
@@ -113,7 +111,8 @@ _x = av(frequencies)
 
 sigma = sigma_inter(frequencies, _x)
 
-norm = normal(frequencies, sigma, _x)
+norm = normal(frequencies, sigma, _x, 1)
+norm_graph = normal(frequencies, sigma, _x, 0.1)
 
 conf = confidence(random.choice(selections))
 
@@ -123,31 +122,28 @@ selection_2 = [random.choice(selections), random.choice(selections)]
 if __name__ == "__main__":
     print('Длин выборки')
     print(n)
-    print(norm)
     #print('Значения выборок')
     #for i in selections:
     #    print(i)
 
     print('Средние выборок')
-    print(averages)
+    print(averages, end='\n\n')
     print('Интервальный ряд')
-    print(interval_row)
+    print(interval_row, end='\n\n')
     print('Интервальный ряд с частотами')
-    print(frequencies)
-    print('Нормальное распределение')
-    print(norm)
+    print(frequencies, end='\n\n')
 
     print('Значения для выборки')
-    print('Математическое ожидание')
-    print(conf[1])
     print('Критерий Стьдента')
-    print(scipy.stats.t.ppf(1 - alpha / 2, len(random.choice(selections)) - 1))
+    print(scipy.stats.t.ppf(1 - alpha / 2, len(random.choice(selections)) - 1), end='\n\n')
     print('СКО')
-    print(conf[2])
+    print(conf[2], end='\n\n')
     print('Точность')
-    print(conf[3])
+    print(conf[3], end='\n\n')
     print('Доверительный интервал')
-    print(f'{conf[0][0]} {(conf[0][0] + conf[0][1]) / 2} {conf[0][1]}')
+    print(f'{conf[0][0]} {conf[0][1]}', end='\n\n')
+    print('Средняя доверительного интервала')
+    print(f'{(conf[0][0] + conf[0][1]) / 2}', end='\n\n')
 
-    diagram(frequencies, norm)
+    diagram(frequencies, norm_graph)
 

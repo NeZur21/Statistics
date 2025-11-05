@@ -50,8 +50,11 @@ def mid_i(d):
     x = x / sum(i[1] for i in d)
     return x
 
-def disp_d(d):
-    return sum((x[0] - mid_d(d)) ** 2 * x[1] for x in d) / sum(i[1] for i in d)
+def disp_d(d, f):
+    if f:
+        return sum((x[0] - mid_d(d)) ** 2 * x[1] for x in d) / sum(i[1] for i in d)
+    return sum((x[0] - mid_d(d)) ** 2 * x[1] for x in d) / (sum(i[1] for i in d) - 1)
+
 def disp_i(d):
     return sum((((x[0][0] + x[0][1]) / 2) - mid_i(d)) ** 2 * x[1] for x in d) / sum(i[1] for i in d)
 
@@ -197,7 +200,7 @@ def func(d):
 
 diskr_ser = sorted(diskr(lines1).items())
 interval_ser = sorted(interval(diskr_ser, 7).items())
-d1 = disp_d(diskr_ser)
+d1 = disp_d(diskr_ser, True)
 d2 = disp_i(interval_ser)
 sigma1 = math.sqrt(d1)
 sigma2 = math.sqrt(d2)
@@ -243,4 +246,3 @@ if __name__ == "__main__":
     diagram(interval_ser)
     polygon(diskr_ser)
     func(comm(diskr_ser))
-sko = 12.774983
