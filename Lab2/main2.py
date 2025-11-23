@@ -119,12 +119,16 @@ conf = confidence(random.choice(selections))
 selection_1 = random.choice(selections)
 selection_2 = [random.choice(selections), random.choice(selections)]
 
+cov = -4032.3032
+
 if __name__ == "__main__":
     print('Длин выборки')
     print(n)
     #print('Значения выборок')
     #for i in selections:
     #    print(i)
+
+
 
     print('Средние выборок')
     print(averages, end='\n\n')

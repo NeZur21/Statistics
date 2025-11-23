@@ -14,11 +14,11 @@ Y_mean = np.mean(Y)
 def cov(X, Y):
     c = 0
     for x, y in diskr_ser:
-        c += (x - np.mean(X)) * (y - np.mean(Y))
-    return  c / (len(X) - 1)
+        c += (x - X_mean) * (y - Y_mean)
+    return  c / (len(X))
 
-sko_X = np.std(X, ddof=1)
-sko_Y = np.std(Y, ddof=1)
+sko_X = np.std(X, ddof=0)
+sko_Y = np.std(Y, ddof=0)
 
 def cof_cov(cov, sko_X, sko_Y):
     return cov / (sko_X * sko_Y)
@@ -72,8 +72,6 @@ def spearman(diskr_ser):
     p = 0
     X = stats.rankdata([a for (a, f) in diskr_ser], method='average')
     Y = stats.rankdata([f for (a, f) in diskr_ser], method='average')
-    print(X)
-    print(Y)
     for i in range(len(X)):
         p += (X[i] - Y[i]) ** 2
     return 1 - ((6 * p) / (len(diskr_ser) ** 3 - len(diskr_ser)))
@@ -83,7 +81,7 @@ spear_cof = spearman(diskr_ser)
 print('Среднее значение возрастов', X_mean)
 print('Среднее значение частот', Y_mean)
 
-print('Коэффициент ковариации', covariation)
+print(f'Коэффициент ковариации {covariation:.4f}')
 
 print('Среднее квадратичное отклонение возраста', sko_X)
 print('Среднее квадратичное отклонение частоты', sko_Y)
@@ -96,16 +94,16 @@ print('Наблюдаемое значение', nabl)
 print('Критическое значение', t_crit)
 
 if nabl < t_crit:
-    print('Гипотеза H₀ отвергается - корреляция статистически значима')
+    print('Гипотеза H₀ отвергается - коэффициент корреляции в генеральной совокупности не равен нулю')
 else:
     print('H₀ не отвергается - корреляция статистически незначима, значит частота и возраст связаны линейной корреляции')
 
-print('Средние групп:', x_i)
-print('Дисперсии групп:', d_i)
+#print('Средние групп:', x_i)
+#print('Дисперсии групп:', d_i)
 print('Внутригрупповая дисперсия', ing)
 print('Межгрупповая дисперсия', mejg)
-print('Общая дисперсия', obsh)
-print(d1)
+print(f'Общая дисперсия {obsh:.10f}')
+print(f'Дисперсия из 1 лабы {d1:.10f}')
 print('Корреляционное отношение', math.sqrt(mejg / obsh))
 print('Коэффициент Спирмана', spear_cof)
 
