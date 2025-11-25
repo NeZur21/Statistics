@@ -14,11 +14,11 @@ Y_mean = np.mean(Y)
 def cov(X, Y):
     c = 0
     for x, y in diskr_ser:
-        c += (x - X_mean) * (y - Y_mean)
+        c += (x - np.mean(X)) * (y - np.mean(Y))
     return  c / (len(X))
 
-sko_X = np.std(X, ddof=0)
-sko_Y = np.std(Y, ddof=0)
+sko_X = np.std(X, ddof=1)
+sko_Y = np.std(Y, ddof=1)
 
 def cof_cov(cov, sko_X, sko_Y):
     return cov / (sko_X * sko_Y)
@@ -77,41 +77,41 @@ def spearman(diskr_ser):
     return 1 - ((6 * p) / (len(diskr_ser) ** 3 - len(diskr_ser)))
 
 spear_cof = spearman(diskr_ser)
+if __name__ == '__main__':
+    print('Среднее значение возрастов', X_mean)
+    print('Среднее значение частот', Y_mean)
 
-print('Среднее значение возрастов', X_mean)
-print('Среднее значение частот', Y_mean)
+    print('Коэффициент ковариации', covariation)
 
-print(f'Коэффициент ковариации {covariation:.4f}')
+    print('Среднее квадратичное отклонение возраста', sko_X)
+    print('Среднее квадратичное отклонение частоты', sko_Y)
 
-print('Среднее квадратичное отклонение возраста', sko_X)
-print('Среднее квадратичное отклонение частоты', sko_Y)
+    print('Линейный коэффициент корреляции', correlation)
 
-print('Линейный коэффициент корреляции', correlation)
+    print('r < -0.5: с возрастом частота преступлений снижается')
 
-print('r < -0.5: с возрастом частота преступлений снижается')
+    print('Наблюдаемое значение', nabl)
+    print('Критическое значение', t_crit)
 
-print('Наблюдаемое значение', nabl)
-print('Критическое значение', t_crit)
+    if nabl < t_crit:
+        print('Гипотеза H₀ отвергается - корреляция статистически значима')
+    else:
+        print('H₀ не отвергается - корреляция статистически незначима, значит частота и возраст связаны линейной корреляции')
 
-if nabl < t_crit:
-    print('Гипотеза H₀ отвергается - коэффициент корреляции в генеральной совокупности не равен нулю')
-else:
-    print('H₀ не отвергается - корреляция статистически незначима, значит частота и возраст связаны линейной корреляции')
+    print('Средние групп:', x_i)
+    print('Дисперсии групп:', d_i)
+    print('Внутригрупповая дисперсия', ing)
+    print('Межгрупповая дисперсия', mejg)
+    print('Общая дисперсия', obsh)
+    print(d1)
+    print('Корреляционное отношение', math.sqrt(mejg / obsh))
+    print('Коэффициент Спирмана', spear_cof)
 
-#print('Средние групп:', x_i)
-#print('Дисперсии групп:', d_i)
-print('Внутригрупповая дисперсия', ing)
-print('Межгрупповая дисперсия', mejg)
-print(f'Общая дисперсия {obsh:.10f}')
-print(f'Дисперсия из 1 лабы {d1:.10f}')
-print('Корреляционное отношение', math.sqrt(mejg / obsh))
-print('Коэффициент Спирмана', spear_cof)
-
-plt.figure(figsize = (15, 6))
-plt.scatter(X, Y, label='Данные')
-plt.title('Корреляционное поле')
-plt.xlabel('Возраст преступников')
-plt.ylabel('Частота преступлений')
-plt.xticks(range(min(X), max(X) + 1))
-plt.grid(True)
-plt.show()
+    plt.figure(figsize = (15, 6))
+    plt.scatter(X, Y, label='Данные')
+    plt.title('Корреляционное поле')
+    plt.xlabel('Возраст преступников')
+    plt.ylabel('Частота преступлений')
+    plt.xticks(range(min(X), max(X) + 1))
+    plt.grid(True)
+    plt.show()
