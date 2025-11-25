@@ -74,28 +74,51 @@ plt.grid(True)
 plt.legend()
 plt.show()
 
-x_interp = np.arange(min(X), max(X) + 1, 1)
-# print(x_interp)
+def approx(X,Y, func):
 
-u = [val for val in X] # math.log(val)
-n = len(X)
-sum_u = sum(u)
-sum_y = sum(Y)
-sum_uy = sum(u[i] * Y[i] for i in range(n))
-sum_u2 = sum(u[i] ** 2 for i in range(n))
+    x_interp = np.arange(min(X), max(X) + 1, 1)
+    # print(x_interp)
 
-a = (sum_uy - (sum_u * sum_y) / n) / (sum_u2 - (sum_u ** 2) / n)
-b = (sum_y / n) - a * (sum_u / n)
+    u = [func(val) for val in X] # math.log(val)
+    n = len(X)
+    sum_u = sum(u)
+    sum_y = sum(Y)
+    sum_uy = sum(u[i] * Y[i] for i in range(n))
+    sum_u2 = sum(u[i] ** 2 for i in range(n))
 
-# print(f"Коэффициенты аппроксимации: a = {a}, b = {b}")
+    a = (sum_uy - (sum_u * sum_y) / n) / (sum_u2 - (sum_u ** 2) / n)
+    b = (sum_y / n) - a * (sum_u / n)
 
-new_y = []
-for xi in x_interp:
-    if xi in X:
-        new_y.append(Y[list(X).index(xi)])
-    else:
-        # print(math.log(xi), xi)
-        new_y.append(a * xi + b) # math.log(val)
+    # print(f"Коэффициенты аппроксимации: a = {a}, b = {b}")
+
+    new_y = []
+    for xi in x_interp:
+        if xi in X:
+            new_y.append(Y[list(X).index(xi)])
+        else:
+            # print(math.log(xi), xi)
+            new_y.append(a * func(xi) + b) # math.log(val)
+    # Оценка параметров линейной модели
+
+    print(f"Модель: y = {a:.4f} * x + {b:.4f}")
+
+    if func == math.log:
+        func = np.log
+
+    X = np.array(X, dtype=float)
+    Y_pred = a * func(X) + b   # np.log(X)
+    # -0.5677283540348753
+
+    SS_res = np.sum((Y - Y_pred)**2)
+    SS_tot = np.sum((Y - np.mean(Y))**2)
+    R2 = 1 - SS_res / SS_tot
+
+    print(f"R^2 = {R2:.4f}")
+    print(f"√R^2 = {np.sqrt(R2):.4f}")
+    print(f'rxy = {correlation:.4f}')
+    return a, b, sum_y, new_y, R2
+
+a, b, sum_y, new_y, R2 = approx(X,Y, abs)
 
 # print("Обновленный массив y:", new_y)
 
@@ -120,22 +143,7 @@ while max_diff > percent_2:
 print(f"Минимальная разность ≤ 2%: {max_diff}")
 print(f"Показатель степени аппроксимирующего многочлена: {attempt}")
 
-# Оценка параметров линейной модели
-
-print(f"Модель: y = {a:.4f} * x + {b:.4f}")
-
-X = np.array(X, dtype=float)
-Y_pred = a * X + b   # np.log(X)
-# -0.5677283540348753
-
-SS_res = np.sum((Y - Y_pred)**2)
-SS_tot = np.sum((Y - np.mean(Y))**2)
-R2 = 1 - SS_res / SS_tot
-
-print(f"R^2 = {R2:.4f}")
-print(f"√R^2 = {np.sqrt(R2):.4f}")
-print(f'rxy = {correlation:.4f}')
-
+a1, b1, sum_y1, new_y1, R21 = approx(X,Y, math.log)
 
 plt.figure(figsize=(10, 6))
 
@@ -145,6 +153,10 @@ x_fit = np.linspace(min(X), max(X), 200)
 y_fit = a * x_fit + b # np.log(x_fit)
 plt.plot(x_fit, y_fit, color="red", linewidth=2, label=f"y = {a:.4f} x + {b:.4f}")
 
+x_fit1 = np.linspace(min(X), max(X), 200)
+y_fit1 = a1 * np.log(x_fit1) + b1 # np.log(x_fit)
+plt.plot(x_fit1, y_fit1, color="blue", linewidth=2, label=f"y = {a1:.4f} x + {b1:.4f}")
+
 plt.xlabel("x")
 plt.ylabel("y")
 plt.title("Корреляционное поле с аппроксимацией")
@@ -152,6 +164,8 @@ plt.grid(True, linestyle=":", linewidth=0.7, alpha=0.7)
 plt.legend()
 
 plt.text(min(X) + 0.5, max(Y) - 0.5, f"R² = {R2:.4f}", fontsize=12, color="darkred")
+plt.text(min(X) + 0.5, max(Y) - 100, f"R² = {R21:.4f}", fontsize=12, color="darkblue")
+
 
 plt.show()
 
