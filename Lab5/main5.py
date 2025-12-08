@@ -98,12 +98,10 @@ def approx(X,Y, func):
         else:
             # print(math.log(xi), xi)
             new_y.append(a * func(xi) + b) # math.log(val)
-    # Оценка параметров линейной модели
-
-    print(f"Модель: y = {a:.4f} * x + {b:.4f}")
 
     if func == math.log:
         func = np.log
+
 
     X = np.array(X, dtype=float)
     Y_pred = a * func(X) + b   # np.log(X)
@@ -112,13 +110,10 @@ def approx(X,Y, func):
     SS_res = np.sum((Y - Y_pred)**2)
     SS_tot = np.sum((Y - np.mean(Y))**2)
     R2 = 1 - SS_res / SS_tot
-
-    print(f"R^2 = {R2:.4f}")
-    print(f"√R^2 = {np.sqrt(R2):.4f}")
-    print(f'rxy = {correlation:.4f}')
     return a, b, sum_y, new_y, R2
 
 a, b, sum_y, new_y, R2 = approx(X,Y, abs)
+#a1, b1, sum_y1, new_y1, R21 = approx(X,Y, math.log)
 
 # print("Обновленный массив y:", new_y)
 
@@ -129,33 +124,38 @@ attempt = 0
 
 new_y_copy = new_y.copy()
 
+print(f'Меньше 2% {percent_2}')
+
 while max_diff > percent_2:
     attempt += 1
     y_diff = [abs(new_y_copy[i] - new_y_copy[i - 1]) for i in range(1, len(new_y_copy))]
 
-    print(f"Попытка {attempt}, последовательные разности: {y_diff}")
+    #print(f"Попытка {attempt}, последовательные разности: {y_diff}")
 
     max_diff = max(y_diff)
-    print(f"Максимальная разность = {max_diff} ({'больше' if max_diff > percent_2 else 'меньше'} 2%)")
+    print(f"Попытка {attempt}. Максимальная разность = {max_diff} ({'больше' if max_diff > percent_2 else 'меньше'} 2%)")
 
     new_y_copy = y_diff.copy()
 
 print(f"Минимальная разность ≤ 2%: {max_diff}")
 print(f"Показатель степени аппроксимирующего многочлена: {attempt}")
 
-a1, b1, sum_y1, new_y1, R21 = approx(X,Y, math.log)
+print(f"Модель: y = {a:.4f} * x + {b:.4f}")
+print(f"R^2 = {R2:.4f}")
+print(f"√R^2 = {np.sqrt(R2):.4f}")
+print(f'rxy = {correlation:.4f}')
 
 plt.figure(figsize=(10, 6))
 
-plt.scatter(X, Y, color="blue", label="Исходные данные", s=60)
+plt.plot(X, Y, 'o-', color="blue", label="Исходные данные")
 
 x_fit = np.linspace(min(X), max(X), 200)
 y_fit = a * x_fit + b # np.log(x_fit)
 plt.plot(x_fit, y_fit, color="red", linewidth=2, label=f"y = {a:.4f} x + {b:.4f}")
 
-x_fit1 = np.linspace(min(X), max(X), 200)
-y_fit1 = a1 * np.log(x_fit1) + b1 # np.log(x_fit)
-plt.plot(x_fit1, y_fit1, color="blue", linewidth=2, label=f"y = {a1:.4f} x + {b1:.4f}")
+# x_fit1 = np.linspace(min(X), max(X), 200)
+# y_fit1 = a1 * np.log(x_fit1) + b1 # np.log(x_fit)
+# plt.plot(x_fit1, y_fit1, color="blue", linewidth=2, label=f"y = {a1:.4f} x + {b1:.4f}")
 
 plt.xlabel("x")
 plt.ylabel("y")
@@ -164,7 +164,7 @@ plt.grid(True, linestyle=":", linewidth=0.7, alpha=0.7)
 plt.legend()
 
 plt.text(min(X) + 0.5, max(Y) - 0.5, f"R² = {R2:.4f}", fontsize=12, color="darkred")
-plt.text(min(X) + 0.5, max(Y) - 100, f"R² = {R21:.4f}", fontsize=12, color="darkblue")
+# plt.text(min(X) + 0.5, max(Y) - 100, f"R² = {R21:.4f}", fontsize=12, color="darkblue")
 
 
 plt.show()

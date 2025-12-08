@@ -17,8 +17,8 @@ def cov(X, Y):
         c += (x - np.mean(X)) * (y - np.mean(Y))
     return  c / (len(X))
 
-sko_X = np.std(X, ddof=1)
-sko_Y = np.std(Y, ddof=1)
+sko_X = np.std(X, ddof=0)
+sko_Y = np.std(Y, ddof=0)
 
 def cof_cov(cov, sko_X, sko_Y):
     return cov / (sko_X * sko_Y)
